@@ -2,17 +2,18 @@
 import numpy as np
 import cv2 as cv
 import pandas as pd
-from unet import unet
-from proceso import (imagenProceso, removerAreas, aumentoTam, cuadrarRect,
-                     dimRec)
+import os
+from utpnerves.preprocessing import imagenProceso, removerAreas, aumentoTam, cuadrarRect, dimRec, unet
 
 
 #%% Load Image example
 from glob import glob
-list_imgs = glob('./imgs/*.jpg')
-img_path = list_imgs[np.random.choice(list(range(len(list_imgs))))]
+list_imgs = glob('assets/imgs/*.jpg')
 
-img_array = cv.imread(img_path,cv.IMREAD_GRAYSCALE)
+#img_path = list_imgs[np.random.choice(list(range(len(list_imgs))))]
+img_path = np.random.choice(list_imgs)
+
+img_array = cv.imread(img_path, cv.IMREAD_GRAYSCALE)
 #%%
 #imagen = cv.imdecode(np.frombuffer(img, np.uint8), cv.IMREAD_GRAYSCALE)
 ## Convertir la lista en array
@@ -20,7 +21,7 @@ img_array = cv.imread(img_path,cv.IMREAD_GRAYSCALE)
 # Creación del modelo
 modelo = unet()
 # Cargar los pesos pre-entrenados del modelo
-modelo.load_weights('models/pesosBalanceBlancos.h5')
+modelo.load_weights(os.path.join('assets', 'models', 'pesosBalanceBlancos.h5'))
 # Procesar la imagen-array
 img_process = imagenProceso(img_array)
 # Pasar la imagen procesada a la etapa de inferencia

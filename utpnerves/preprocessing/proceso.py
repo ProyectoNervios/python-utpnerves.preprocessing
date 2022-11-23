@@ -1,8 +1,9 @@
 import numpy as np
 import cv2 as cv
-
+import logging
 
 # Método Balance de Blancos
+
 
 def Limitar(im):
     Mayores = im > 255
@@ -38,9 +39,9 @@ def white_balance(Imagen):
 
 
 def manipulacionDatos_prediccion(imagen):
-    print('-' * 60)
-    print('Loading and preprocessing train data...')
-    print('-' * 60)
+    logging.debug('-' * 60)
+    logging.debug('Loading and preprocessing train data...')
+    logging.debug('-' * 60)
 
     imagen = imagen.reshape((1,
                              imagen.shape[0],

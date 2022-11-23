@@ -3,8 +3,7 @@ import numpy as np
 import cv2 as cv
 import pandas as pd
 from modelo.unet import unet
-from proceso import (imagenProceso, removerAreas, aumentoTam, cuadrarRect,
-                     dimRec)
+from proceso import imagenProceso, removerAreas, aumentoTam, cuadrarRect, dimRec
 
 
 def saludo():
@@ -60,8 +59,8 @@ def camara():
         # Ejemplo de la tabla de valores
         st.subheader("Tabla Metadatos (Ejemplo)")
         # Creación del dataset
-        data=[["B", "CHI"], ["Frec.", "12.0 MHz"], ["Gn", "66"], ["E/A", "2/1"], ["Mapa", "D/O"], ["D", "5cm"],
-              ["DR", "75"], ["FR", "16 Hz"], ["AO", "100%"], ["XBeam", "On"], ["BStr +", "Off"]]
+        data = [["B", "CHI"], ["Frec.", "12.0 MHz"], ["Gn", "66"], ["E/A", "2/1"], ["Mapa", "D/O"], ["D", "5cm"],
+                ["DR", "75"], ["FR", "16 Hz"], ["AO", "100%"], ["XBeam", "On"], ["BStr +", "Off"]]
         df = pd.DataFrame(data, columns=["Name", "Value"])
         st.dataframe(df)
 
