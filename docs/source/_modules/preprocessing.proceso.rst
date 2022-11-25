@@ -1,4 +1,4 @@
 .. automodule:: preprocessing.proceso
    :members:
-   :no-undoc-members:
-   :no-show-:
+   :undoc-members:
+   :show-inheritance:

@@ -5,7 +5,7 @@
    :maxdepth: 2
    :name: mastertoc
 
-   
+   notebooks/01-example
 
 
 .. only:: html

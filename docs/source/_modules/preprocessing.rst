@@ -3,8 +3,8 @@ preprocessing package
 
 .. automodule:: preprocessing
    :members:
-   :no-undoc-members:
-   :no-show-:
+   :undoc-members:
+   :show-inheritance:
 
 Submodules
 ----------
