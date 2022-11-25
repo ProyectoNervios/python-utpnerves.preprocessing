@@ -1,18 +1,43 @@
-from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.layers import Input
-from tensorflow.keras.layers import Dropout, Lambda
-from tensorflow.keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
-from tensorflow.keras.layers import MaxPooling2D
+"""
+====
+Unet
+====
+
+Descripción de este archivo.
+"""
+
+import numpy as np
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dropout, Conv2D, Conv2DTranspose, MaxPooling2D
 from tensorflow.keras.layers import concatenate
-from tensorflow.keras.callbacks import EarlyStopping,  ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import backend as K
 
-# Metrica de evalaución
-smooth = 1
 
+def dice_coef(y_true: np.ndarray, y_pred: np.ndarray):
+    """
+    Descripción corta, una línea y termina en punto.
 
-def dice_coef(y_true, y_pred):
+    Descripción tan larga como sea necesaria, multilinea.
+    Descripción tan larga como sea necesaria, multilinea.
+    Descripción tan larga como sea necesaria, multilinea.
+
+    Parameters
+    ----------
+    y_true
+        Description of parameter `y_true`.
+    y_pred
+        Description of parameter `y_pred`.
+
+    Returns
+    -------
+    obj
+        Descripción del objeto que retorna.
+    """
+
+    # Metrica de evalaución
+    smooth = 1
+
     y_true_f = K.flatten(y_true)
     y_pred_f = K.flatten(y_pred)
     intersection = K.sum(y_true_f * y_pred_f)
@@ -20,11 +45,45 @@ def dice_coef(y_true, y_pred):
 
 
 # Función de costo
-def dice_coef_loss(y_true, y_pred):
+def dice_coef_loss(y_true: np.ndarray, y_pred: np.ndarray):
+    """
+    Descripción corta, una línea y termina en punto.
+
+    Descripción tan larga como sea necesaria, multilinea.
+    Descripción tan larga como sea necesaria, multilinea.
+    Descripción tan larga como sea necesaria, multilinea.
+
+    Parameters
+    ----------
+    y_true
+        Description of parameter `y_true`.
+    y_pred
+        Description of parameter `y_pred`.
+
+    Returns
+    -------
+    obj
+        Descripción del objeto que retorna.
+    """
+
     return -dice_coef(y_true, y_pred)
 
-def unet():
-    ## Etapa de contracción
+
+def unet() -> Model:
+    """
+    Descripción corta, una línea y termina en punto.
+
+    Descripción tan larga como sea necesaria, multilinea.
+    Descripción tan larga como sea necesaria, multilinea.
+    Descripción tan larga como sea necesaria, multilinea.
+
+    Returns
+    -------
+    model
+        Descripción del objeto que retorna.
+    """
+
+    # Etapa de contracción
     entrada = Input((180, 320, 1))
 
     # Bloque 1
@@ -48,11 +107,11 @@ def unet():
     pool4 = MaxPooling2D((2, 2), strides=(3, 2), padding='same')(conv4)
     drop4 = Dropout(0.2)(pool4)
 
-    ## Enlace o puente
+    # Enlace o puente
     conv5 = Conv2D(512, (3, 3), activation='relu', padding='same')(pool4)
     conv5 = Conv2D(512, (3, 3), activation='relu', padding='same')(conv5)
 
-    ## Etapa de expansión
+    # Etapa de expansión
     # Bloque 5
     exp1 = Conv2DTranspose(256, (2, 2), strides=(3, 2), padding='same',
                            activation='relu')(conv5)
@@ -78,15 +137,15 @@ def unet():
     conv9 = Conv2D(32, (3, 3), activation='relu', padding='same')(cont4)
     conv9 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv9)
 
-    ## Etapa de organización. Practicamente no cambia y es obligatoria en casi
-    ## todas las redes FCN y por supuesto va siempre al final
+    # Etapa de organización. Practicamente no cambia y es obligatoria en casi
+    # todas las redes FCN y por supuesto va siempre al final
     conv10 = Conv2D(1, (1, 1), activation='sigmoid')(conv9)
 
-    ## Juntamos el modelo. Le estamos diciendo desde donde inicia el modelo
-    ## y hasta donde va.
+    # Juntamos el modelo. Le estamos diciendo desde donde inicia el modelo
+    # y hasta donde va.
     model = Model(inputs=[entrada], outputs=[conv10])
 
-    ## Compilamos el modelo
+    # Compilamos el modelo
     model.compile(optimizer=Adam(learning_rate=1e-5),
                   loss=dice_coef_loss,
                   metrics=[dice_coef])

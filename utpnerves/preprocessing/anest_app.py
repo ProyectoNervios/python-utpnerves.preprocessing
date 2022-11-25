@@ -3,16 +3,16 @@ import numpy as np
 import cv2 as cv
 import pandas as pd
 from modelo.unet import unet
-from proceso import imagenProceso, removerAreas, aumentoTam, cuadrarRect, dimRec
+from proceso import imagen_proceso, remover_areas, aumento_tam, cuadrar_rect, dim_rec
 
 
 def saludo():
     # Título de la App
     st.header("Anest App")
     # Descripción del aplicativo
-    texto = """ Esta aplicación permite extraer la información relevante de los 
+    texto = """ Esta aplicación permite extraer la información relevante de los
     dispositivos de ultrasonido. Primero extrae la imagen,para después extraer
-    los metadatos que arroja el dispositivo de ultrasonido.  
+    los metadatos que arroja el dispositivo de ultrasonido.
     """
     st.write(texto)
 
@@ -33,7 +33,7 @@ def camara():
         # Cargar los pesos pre-entrenados del modelo
         modelo.load_weights('pesos/pesosBalanceBlancos.h5')
         # Procesar la imagen-array
-        img_process = imagenProceso(img_array)
+        img_process = imagen_proceso(img_array)
         # Pasar la imagen procesada a la etapa de inferencia
         prediccion = modelo.predict(img_process)
         # Limitar la predicción
@@ -42,13 +42,13 @@ def camara():
         # Pasar de un tensor-imagen a una imagen que se pueda mostrar
         prediccion = prediccion[0, :, :, 0]
         # Eliminar areas pequeñas de la imagen
-        img_areas_remove = removerAreas(prediccion)
+        img_areas_remove = remover_areas(prediccion)
         # Redondear los valores del preproces anterior
-        img_round = np.round(aumentoTam(img_areas_remove, img_array.shape))
+        img_round = np.round(aumento_tam(img_areas_remove, img_array.shape))
         # Calcular el rectángulo que encierra la predicción
-        mask_rectangle = cuadrarRect(img_round)
+        mask_rectangle = cuadrar_rect(img_round)
         # cinfigurar el rectangulo como una imagen
-        final_image = dimRec(mask_rectangle, img_array)
+        final_image = dim_rec(mask_rectangle, img_array)
         # Multiplicar el rectángulo con la imagen original
         ee = np.multiply(mask_rectangle, img_array) / 255.0
         # Mostrar la imagen
