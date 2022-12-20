@@ -16,7 +16,7 @@ from typing import TypeVar
 
 Image = TypeVar('Image', bound=np.ndarray)
 
-class proceso:
+class Proceso:
 
 	def limitar(self, im: Image) -> Image:
 		"""
@@ -44,7 +44,9 @@ class proceso:
 		return im
 
 
-	def imadjust(self, imagen: Image, low_in: float, hig_in: float, low_out: float, hig_out: float, gamma: float) -> Image:
+	def imadjust(
+			self, imagen: Image, low_in: float, hig_in: float, 
+			low_out: float, hig_out: float, gamma: float) -> Image:
 		"""
 		Esta función permite aplicar una transformación
 		lineal a una imagen(canal). Esta ecuación se encuentra
@@ -73,7 +75,11 @@ class proceso:
 		"""
 
 		imagen_mod = np.zeros(imagen.shape, dtype=np.uint8)
-		imagen_mod = low_out + (hig_out - low_out) * ((imagen - low_in) / (hig_in - low_in)) ** gamma
+		imagen_mod = (
+			low_out 
+			+ (hig_out-low_out) 
+			* ((imagen-low_in) / (hig_in-low_in))**gamma)
+
 		imagen_mod = np.round(255 * imagen_mod)
 		imagen_mod = self.limitar(imagen_mod)
 		imagen_mod = np.uint8(imagen_mod)
@@ -181,9 +187,10 @@ class proceso:
 		resized_imagen
 			Imagen ampliada.
 		"""
-		resized_imagen = cv.resize(imagen,
-								   (tam_nuevo[1], tam_nuevo[0]),
-								   interpolation=cv.INTER_AREA)
+		resized_imagen = cv.resize(
+			imagen,
+			(tam_nuevo[1], tam_nuevo[0]),
+			interpolation=cv.INTER_AREA)
 		# resized_imagen = Limitar(resized_imagen)
 		return resized_imagen
 
@@ -237,7 +244,10 @@ class proceso:
 		"""
 		img = np.array(mascara, dtype = np.uint8)
 		imgRGB = cv.cvtColor(img.copy(), cv.COLOR_GRAY2RGB)
-		a, ctrs = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+		a, ctrs = cv.findContours(
+			img, 
+			cv.RETR_EXTERNAL, 
+			cv.CHAIN_APPROX_SIMPLE)
 
 		# print(a)
 		boxes = []
@@ -249,7 +259,9 @@ class proceso:
 			top_left = (box[0], box[1])
 			bottom_right = (box[0] + box[2], box[1] + box[3])
 			# para que quede solo el recuadro, cambiar el -1 por un 2
-			cv.rectangle(imgRGB, top_left, bottom_right, (255, 255, 255), -1)
+			cv.rectangle(
+				imgRGB, top_left, bottom_right, 
+				(255, 255, 255), -1)
 
 		return imgRGB[:, :, 0] / 255.0
 
@@ -270,7 +282,11 @@ class proceso:
 		mask
 			Porción de la imagen.
 		"""
-		cnts, _ = cv.findContours(np.uint8(mascara), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-		mask = imagen[cnts[0][0][0][1]: cnts[0][1][0][1], cnts[0][0][0][0]: cnts[0][2][0][0]]
+		cnts, _ = cv.findContours(
+			np.uint8(mascara), cv.RETR_EXTERNAL, 
+			cv.CHAIN_APPROX_SIMPLE)
+		mask = imagen[
+			cnts[0][0][0][1] : cnts[0][1][0][1], 
+			cnts[0][0][0][0] : cnts[0][2][0][0]]
 		return mask
 
