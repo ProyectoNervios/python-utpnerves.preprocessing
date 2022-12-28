@@ -162,13 +162,15 @@ class Proceso:
 			Imagen procesada.
 		"""
 		balance = self.white_balance(imagen)
-		resized_imagen = cv.resize(balance, (320, 180), interpolation=cv.INTER_AREA)
+		resized_imagen = cv.resize(
+			balance, (320, 180), 
+			interpolation=cv.INTER_AREA)
 		resized_imagen = np.array(resized_imagen)
 		imagenTensor = self.manipulacion_datos_prediccion(resized_imagen)
 		return imagenTensor
 
 
-	def aumento_tam(self, imagen, tam_nuevo):
+	def aumento_tam(self, imagen: Image, tam_nuevo: tuple) -> Image:
 		"""
 		Esta función permite modificar el tamaño de la imagen.
 		Este proceso es necesario ya que se requiere volver
@@ -195,20 +197,24 @@ class Proceso:
 		return resized_imagen
 
 
-	def remover_areas(self, imagen, min_size=500):
+	def remover_areas(
+			self, 
+			imagen: Image, 
+			min_size: int = 500) -> Image:
 		"""
 		Función que permite mejorar el resultado de la segmentación 
-		o predicción, removiendoa quellas zonas que sumen cierto valor.
+		o predicción, removiendo aquellas zonas que sumen cierto valor.
 
  		Parameters
 		----------
 		imagen
 			Imagen binaria.
 		min_size
-			valor del area que se quiere remover. El area se define como 
-			la cantidad de pixeles que son iguales a 1. El valor por defecto 
-			es 500, lo que quiere decir se van a remover todos los objetos 
-			de la imagen que sumen igual o menos de 500 píxeles.
+			Valor del área que se quiere remover. El área se define
+			como la cantidad de pixeles que son iguales a 1. El valor 
+			por defecto es 500, lo que quiere decir se van a remover 
+			todos los objetos de la imagen que sumen igual o menos de 
+			500 píxeles.
 
 		Returns
 		-------
@@ -228,7 +234,7 @@ class Proceso:
 		return im_result
 
 
-	def cuadrar_rect(self, mascara):
+	def cuadrar_rect(self, mascara: Image) -> Image:
 		"""
 		Esta función permite calcular el rectángulo mas pequeño
 		que encierra el objeto.
@@ -266,7 +272,7 @@ class Proceso:
 		return imgRGB[:, :, 0] / 255.0
 
 
-	def dim_rec(self, mascara, imagen):
+	def dim_rec(self, mascara: Image, imagen: Image) -> Image:
 		"""
 		Función para crear la máscara rectángulo.
 
