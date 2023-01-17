@@ -1,2 +1,1 @@
-from .proceso import Proceso
-from .unet import Unet
+from .proceso import Process

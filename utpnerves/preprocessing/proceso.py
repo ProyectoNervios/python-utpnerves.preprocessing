@@ -9,14 +9,52 @@ de ultrasonido y la información de los parámetros del ecógrafo.
 """
 
 
+import os
 import numpy as np
 import cv2 as cv
 import logging
 from typing import TypeVar
+from .unet import Unet
+from sklearn.base import TransformerMixin, BaseEstimator
+
 
 Image = TypeVar('Image', bound=np.ndarray)
 
-class Proceso:
+########################################################################
+class Process(TransformerMixin, BaseEstimator):
+
+    # ----------------------------------------------------------------------
+    def fit(self, X, y=None):
+        return self
+
+    # ----------------------------------------------------------------------
+    def transform(self, X, y=None):
+        """"""
+        modelo = Unet()
+        # Cargar los pesos pre-entrenados del modelo
+        modelo.load_weights(os.path.join('assets', 'models', 'pesosBalanceBlancos.h5'))
+        # Procesar la imagen-array
+        img_process = self.imagen_proceso(X)
+        # Pasar la imagen procesada a la etapa de inferencia
+        prediccion = modelo.predict(img_process)
+        # Limitar la predicción
+        aux = prediccion < 1.0
+        prediccion[aux] = 0
+        # Pasar de un tensor-imagen a una imagen que se pueda mostrar
+        prediccion = prediccion[0, :, :, 0]
+        # Eliminar areas pequeñas de la imagen
+        img_areas_remove = self.remover_areas(prediccion)
+        # Redondear los valores del preproces anterior
+        img_round = np.round(self.aumento_tam(img_areas_remove, X.shape))
+        # Calcular el rectángulo que encierra la predicción
+        mask_rectangle = self.cuadrar_rect(img_round)
+        # cinfigurar el rectangulo como una imagen
+        final_image = self.dim_rec(mask_rectangle, X)  # nos interesa esta
+        # Multiplicar el rectángulo con la imagen original
+
+        return final_image
+
+
 
     def limitar(self, im: Image) -> Image:
         """

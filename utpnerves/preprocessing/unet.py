@@ -18,58 +18,7 @@ from tensorflow.keras import backend as K
 
 class Unet:
 
-    def dice_coef(
-        self, y_true: np.ndarray,
-            y_pred: np.ndarray) -> float:
-        """
-        Cálculo del coeficiente Dice como métrica.
-
-        Parameters
-        ----------
-        y_true
-            Etiquetas.
-        y_pred
-            Predicciones.
-
-        Returns
-        -------
-        float
-            Coeficiente dice.
-        """
-
-        # Metrica de evalaución
-        smooth = 1
-        y_true_f = K.flatten(y_true)
-        y_pred_f = K.flatten(y_pred)
-        intersection = K.sum(y_true_f * y_pred_f)
-        return (
-            (2. * intersection + smooth) / (K.sum(y_true_f) +
-                                            K.sum(y_pred_f) + smooth))
-
-    # Función de costo
-
-    def dice_coef_loss(
-        self, y_true: np.ndarray,
-            y_pred: np.ndarray) -> float:
-        """
-        Cálculo del coeficiente Dice como funcion de costo.
-
-        Parameters
-        ----------
-        y_true
-            Etiquetas.
-        y_pred
-            Predicciones.
-
-        Returns
-        -------
-        float
-            Coeficiente dice.
-        """
-
-        return -self.dice_coef(y_true, y_pred)
-
-    def unet(self) -> Model:
+    def __new__(self) -> Model:
         """
         Implementación del modelo de red neuronal U-Net.
 
@@ -176,4 +125,55 @@ class Unet:
         #              metrics=['accuracy'])
 
         return model
+
+    def dice_coef(
+        self, y_true: np.ndarray,
+            y_pred: np.ndarray) -> float:
+        """
+        Cálculo del coeficiente Dice como métrica.
+
+        Parameters
+        ----------
+        y_true
+            Etiquetas.
+        y_pred
+            Predicciones.
+
+        Returns
+        -------
+        float
+            Coeficiente dice.
+        """
+
+        # Metrica de evalaución
+        smooth = 1
+        y_true_f = K.flatten(y_true)
+        y_pred_f = K.flatten(y_pred)
+        intersection = K.sum(y_true_f * y_pred_f)
+        return (
+            (2. * intersection + smooth) / (K.sum(y_true_f) +
+                                            K.sum(y_pred_f) + smooth))
+
+    # Función de costo
+
+    def dice_coef_loss(
+        self, y_true: np.ndarray,
+            y_pred: np.ndarray) -> float:
+        """
+        Cálculo del coeficiente Dice como funcion de costo.
+
+        Parameters
+        ----------
+        y_true
+            Etiquetas.
+        y_pred
+            Predicciones.
+
+        Returns
+        -------
+        float
+            Coeficiente dice.
+        """
+
+        return -self.dice_coef(y_true, y_pred)
 
