@@ -1,5 +1,8 @@
-ipython==6.4.0
+sphinx==7.0.0
+urllib3<2.0
+ipython
 ipykernel
 nbsphinx
-pygments>=2.4.1
 sphinxcontrib-bibtex
+pygments
+dunderlab-docs
